@@ -245,9 +245,19 @@ FROM User_Objects
 WHERE object_type IN ('PROCEDURE', 'FUNCTION', 'PACKAGE')
 ORDER BY object_name;
 
--- TODO finish this
+SELECT text
+FROM User_Source
+WHERE name = 'ILELAT'
+ORDER BY line;
 
 
 -- zad 10
 
+DROP PROCEDURE Silnia;
+DROP PROCEDURE SilniaRek;
+DROP FUNCTION IleLat;
+
+
 -- zad 11
+
+DROP PACKAGE Konwersja;
