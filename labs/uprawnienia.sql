@@ -104,6 +104,16 @@ CREATE TABLE test(
     tekst VARCHAR2(20)
 );
 
+CREATE OR REPLACE PROCEDURE procPokazTest
+	AUTHID CURRENT_USER IS
+	CURSOR teksty IS
+		SELECT tekst FROM test;
+BEGIN
+  FOR t IN teksty LOOP
+    DBMS_OUTPUT.PUT_LINE(t.tekst);
+  END LOOP;
+END procPokazTest;
+
 
 -- select USER from dual
 -- user_users
