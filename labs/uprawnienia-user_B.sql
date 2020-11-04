@@ -15,7 +15,6 @@ UPDATE inf141286.pracownicy
 SET placa_dod = 700;
 
 
-
 -- zad 6
 CREATE SYNONYM prac_wero FOR inf141286.pracownicy;
 
@@ -53,7 +52,6 @@ GRANT SELECT, UPDATE ON pracownicy TO rola_141286;
 
 SELECT * FROM inf141286.pracownicy;
 
-
 -- zad 12
 
 SET ROLE rola_141313 IDENTIFIED BY inf141313;
@@ -80,10 +78,6 @@ CREATE ROLE user_C_WJ NOT IDENTIFIED;
 
 GRANT SELECT ON inf141286.pracownicy TO user_C_WJ;
 
--- zad 21
-select granted_role, admin_option from user_role_privs where username = 'INF141313';
-select role, owner, table_name, column_name, privilege from role_tab_privs;
-
 -- zad 23
 
 UPDATE inf141286.prac20
@@ -104,6 +98,12 @@ CREATE TABLE test(
     tekst VARCHAR2(20)
 );
 
+INSERT INTO test(id, tekst)
+VALUES(1, 'pierwszy');
+
+INSERT INTO test(id, tekst)
+VALUES(2, 'drugi');
+
 CREATE OR REPLACE PROCEDURE procPokazTest
 	AUTHID CURRENT_USER IS
 	CURSOR teksty IS
@@ -114,6 +114,27 @@ BEGIN
   END LOOP;
 END procPokazTest;
 
+GRANT EXECUTE ON procPokazTest TO inf141286;
+GRANT SELECT ON test TO inf141286;
+
+-- zad 32
+
+CREATE TABLE info_dla_znajomych(
+  NAZWA VARCHAR2(20) NOT NULL,
+  INFO VARCHAR2(200) NOT NULL
+);
+
+INSERT INTO INFO_DLA_ZNAJOMYCH(nazwa, info)
+VALUES('inf141313', 'lorem ipsum dolor sit amet');
+
+INSERT INTO INFO_DLA_ZNAJOMYCH(nazwa, info)
+VALUES('inf141286', 'Czesc, Weronika!');
+
+CREATE OR REPLACE VIEW info4u (nazwa, info) AS
+SELECT nazwa, info FROM inf141313.info_dla_znajomych
+WHERE nazwa = USER;
+
+SELECT * FROM info4u;
 
 -- select USER from dual
 -- user_users
