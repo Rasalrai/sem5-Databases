@@ -1,8 +1,0 @@
-<?xml version = '1.0' encoding = 'UTF-8'?>
-<OSDM_Design class="oracle.dbtools.crest.model.design.Design" name="diagram_zwiazkow_encji" id="34BD14B7-3B30-025E-6962-1F622F1F3036" version="3.5">
-<createdBy>julia</createdBy>
-<createdTime>2020-11-20 17:30:28 UTC</createdTime>
-<ownerDesignName>diagram_zwiazkow_encji</ownerDesignName>
-<capitalNames>false</capitalNames>
-<designId>34BD14B7-3B30-025E-6962-1F622F1F3036</designId>
-</OSDM_Design>
