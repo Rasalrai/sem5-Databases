@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<LogicalDesign class="oracle.dbtools.crest.model.design.logical.LogicalDesign" name="Logical" id="FE1F46CF-4597-C4D3-B15B-921CA47D7F8F" mainViewID="727D5649-786C-960E-29BE-4FA3572C88D9">
+<createdBy>julia</createdBy>
+<createdTime>2020-11-20 17:30:28 UTC</createdTime>
+<ownerDesignName>diagram_zwiazkow_encji</ownerDesignName>
+<shouldBeOpen>false</shouldBeOpen>
+</LogicalDesign>
