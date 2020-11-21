@@ -130,7 +130,7 @@ BEGIN
   END LOOP;
   DBMS_OUTPUT.PUT_LINE(num || '! = ' || fac);
 END;
-
+CURSOR cPracownicy(pIdZesp NUMBER) ISSELECT nazwisko, etat, placa_podFROM PracownicyWHERE id_zesp = pIdZespORDER BY nazwisko;
 
 -- zad 10
 
