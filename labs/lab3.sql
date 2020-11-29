@@ -259,6 +259,7 @@ END;
 
 -- zad 8
 
+
 CREATE OR REPLACE PACKAGE IntZespoly IS
     PROCEDURE addTeam(id zespoly.id_zesp%TYPE,
 				nzw zespoly.nazwa%TYPE,
@@ -271,9 +272,14 @@ CREATE OR REPLACE PACKAGE IntZespoly IS
 	FUNCTION getId(nzw zespoly.nazwa%TYPE) RETURN zespoly.id_zesp%TYPE;
     FUNCTION getName(id zespoly.id_zesp%TYPE) RETURN zespoly.nazwa%TYPE;
     FUNCTION getAddress(id zespoly.id_zesp%TYPE) RETURN zespoly.adres%TYPE;
+
 	IDNotFoundEx EXCEPTION;
 	nameNotFoundEx EXCEPTION;
 	existingIdEx EXCEPTION;
+	
+	PRAGMA EXCEPTION_INIT(IDNotFoundEx, -20137);
+	PRAGMA EXCEPTION_INIT(nameNotFoundEx, -20136);
+	PRAGMA EXCEPTION_INIT(existingIdEx, -20135);
 END IntZespoly;
 
 CREATE OR REPLACE PACKAGE BODY IntZespoly IS
