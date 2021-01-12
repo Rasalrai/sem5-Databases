@@ -1,0 +1,49 @@
+// MongoDB
+
+// zad 1
+
+> db.pracownicy.find()
+{ "_id" : ObjectId("5ffdbd6dae0df45bbb4ab46b"), "id_prac" : 100, "nazwisko" : "Węglarz", "placa_pod" : 1730 }
+{ "_id" : ObjectId("5ffdbdf0ae0df45bbb4ab46c"), "id_prac" : 100, "nazwisko" : "Węglarz", "placa_pod" : 1730 }
+{ "_id" : 100, "nazwisko" : "Węglarz", "placa_pod" : 1730 }
+{ "_id" : ObjectId("5ffdbe3cae0df45bbb4ab46d"), "id_prac" : 110, "nazwisko" : "Węglarz", "placa_pod" : 1730, "zatrudniony" : ISODate("1973-05-01T00:00:00Z") }
+
+// w kolekcji są 4 dokuemnty
+// data przechowywana jest jako obiekt typu ISODate
+
+// zad 2
+
+db.zespoly.insert([
+    {"id_zesp":10,"nazwa":"ADMINISTRACJA","adres":"PIOTROWO 3A"},
+    {"id_zesp":20,"nazwa":"SYSTEMY ROZPROSZONE","adres":"PIOTROWO 3A"},
+    {"id_zesp":30,"nazwa":"SYSTEMY EKSPERCKIE","adres":"STRZELECKA 14"},
+    {"id_zesp":40,"nazwa":"ALGORYTMY","adres":"WLODKOWICA 16"},
+    {"id_zesp":50,"nazwa":"BADANIA OPERACYJNE","adres":"MIELZYNSKIEGO 30"}
+])
+
+// zad 3
+
+Pierwsze zapytanie (z `{"nazwisko":1, "_id":0}`) zwraca tylko zawartość pola "nazwisko" ze znalezionych dokumentów.
+Drugie zapytanie zwraca całą zawartość dokumentów, poza polami "nazwisko" i "_id".
+Trzecie zapytanie powoduje błąd (Cannot do exclusion on field placa_pod in inclusion projection).
+    Dzieje się tak, gdyż nie można w jednym zapytaniu użyć inkluzji i ekskluzji (wyjątkiem jest _id).
+
+// zad 4
+
+db.getCollection('pracownicy').find(
+    {$or: [
+        {etat: "ASYSTENT"},
+        {placa_pod: {$gt: 200, $lt: 500}}
+    ]},
+    {nazwisko: 1, etat: 1, placa_pod: 1, _id: 0}
+)
+
+// zad 5
+
+db.getCollection('pracownicy').find(
+    {placa_pod: {$gt: 400}},
+    {nazwisko: 1, etat: 1, placa_pod: 1, _id: 0}
+).sort({etat: 1}, {placa_pod: -1})
+
+// zad 6
+
