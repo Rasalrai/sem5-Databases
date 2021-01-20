@@ -29,7 +29,6 @@ Trzecie zapytanie powoduje błąd (Cannot do exclusion on field placa_pod in inc
     Dzieje się tak, gdyż nie można w jednym zapytaniu użyć inkluzji i ekskluzji (wyjątkiem jest _id).
 
 // zad 4
-
 db.getCollection('pracownicy').find(
     {$or: [
         {etat: "ASYSTENT"},
@@ -39,11 +38,142 @@ db.getCollection('pracownicy').find(
 )
 
 // zad 5
-
 db.getCollection('pracownicy').find(
     {placa_pod: {$gt: 400}},
     {nazwisko: 1, etat: 1, placa_pod: 1, _id: 0}
 ).sort({etat: 1}, {placa_pod: -1})
 
 // zad 6
+db.pracownicy.find(
+    {id_zesp: 20},
+    {nazwisko: 1, placa_pod: 1, _id: 0}
+).sort({placa_pod: -1}).skip(1).limit(1)
 
+// zad 7
+db.pracownicy.find(
+    {
+        id_zesp: {$in: [20, 30]},
+        nazwisko: {$regex: ".+I$"},
+        etat: {$ne: "ASYSTENT"}
+    },
+    {nazwisko: 1, etat: 1, _id: 0}
+)
+
+// zad 8
+db.pracownicy.aggregate([
+    {$project: {_id: 0,
+        "stanowisko": "$etat",
+        "nazwisko": 1,
+        "rok_zatrudnienia": {$year:"$zatrudniony"}
+        }
+    },
+    {$sort: {placa_pod: -1}},
+    {$skip: 2},
+    {$limit: 1}
+])
+
+// zad 9
+db.pracownicy.aggregate([
+    {$group: {
+        _id: "$id_zesp",
+        liczba: {$sum: 1}
+        }
+    },
+    {$match: {
+        liczba: {$gt: 3},
+        _id: {$ne: null}
+        }
+    }
+])
+
+// zad 10
+db.pracownicy.aggregate([
+    {$lookup: {
+        from: "zespoly",
+        localField: "id_zesp",
+        foreignField: "id_zesp",
+        as: "zespol_pracownika"
+        }
+    },
+    {$project: {
+        nazwisko: 1,
+        dept: {$arrayElemAt:["$zespol_pracownika.adres", 0]}
+        }
+    }
+
+])
+
+// zad 11
+db.pracownicy.aggregate([
+    {$lookup: {
+        from: "zespoly",
+        localField: "id_zesp",
+        foreignField: "id_zesp",
+        as: "zespol_pracownika"
+        }
+    },
+    {$project: {
+        nazwisko: 1,
+        zespol: {$arrayElemAt:["$zespol_pracownika.nazwa", 0]},
+        adres: {$arrayElemAt:["$zespol_pracownika.adres", 0]}
+        }
+    },
+    {$match: {adres: {$regex: "STRZELECKA"}}}
+
+])
+
+// zad 12
+db.zespoly.aggregate([
+    {$lookup: {
+        from: "pracownicy",
+        localField: "id_zesp",
+        foreignField: "id_zesp",
+        as: "czlonkowie"
+        }
+    },
+    {$project: {
+        _id: 0,
+        liczba: {$size: "$czlonkowie"},
+        zespol: "$nazwa"
+        }
+    }
+])
+
+// zad 13
+var zespoly_col = db.zespoly.find();
+while (zespoly_col.hasNext()) {
+    zesp = zespoly_col.next();
+    db.pracownicy.update({id_zesp: zesp.id_zesp}, {$set: {id_zesp: zesp._id}});
+}
+
+// zad 14
+db.produkty.find(
+    {
+        "oceny.osoba": {$nin: ["Ania", "Karol"]}
+    }
+)
+
+// zad 15
+db.produkty.aggregate([
+    {$unwind: "$oceny"},
+    {$group: {
+        _id: "$nazwa",
+        srednia_ocen: {$avg: "$oceny.ocena"}
+        }
+    },
+    {$project: {"produkt": "$_id", srednia_ocen: 1, _id: 0}},
+    {$sort: {srednia_ocen: -1}},
+    {$limit: 1}
+])
+
+// zad 16
+db.produkty.update(
+    {"nazwa": "Kosiarka elektryczna"},
+    {$push: {oceny: {"osoba": "Ania", "ocena": 4}}}
+)
+
+// zad 18
+db.produkty.update(
+    {nazwa: {$ne: null}},
+    {$pull: {"oceny": {"ocena": {$lte: 3.0}}}}
+)

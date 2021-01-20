@@ -83,3 +83,28 @@ INSERT INTO pracownicy(id_prac, nazwisko, etat) VALUES (310, 'Iliescu', 'ASYSTEN
 INSERT INTO pracownicy(id_prac, nazwisko, etat) VALUES (320, 'Popa', 'ADIUNKT');
 INSERT INTO pracownicy(id_prac, nazwisko, placa_pod) VALUES (330, 'Bradea', 20);
 
+
+-- zad 4
+
+CREATE SEQUENCE SEQ_Zespoly
+  START WITH 6997 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER UzupelnijID
+  BEFORE INSERT ON Zespoly
+  FOR EACH ROW
+BEGIN
+  IF :NEW.id_zesp IS NULL THEN
+    :NEW.id_zesp := seq_zespoly.nextval;
+  END IF;
+END;
+
+-- zad 5
+
+CREATE OR REPLACE VIEW Szefowie
+  (szef, pracownicy) AS
+  SELECT ps.nazwisko, podwladni
+    FROM pracownicy ps LEFT JOIN (SELECT id_szefa, COUNT(*) as podwladni
+      FROM pracownicy
+      GROUP BY id_szefa) pp ON ps.id_prac = pp.id_szefa;
+
+-- 5 in progress
