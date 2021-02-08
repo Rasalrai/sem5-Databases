@@ -1,0 +1,190 @@
+// zad 1
+
+127.0.0.1:6379> SET nazwisko Stachowiak EX 50
+OK
+127.0.0.1:6379> GET nazwisko
+"Stachowiak"
+127.0.0.1:6379> EXISTS nazwisko
+(integer) 1
+127.0.0.1:6379> TYPE nazwisko
+string
+127.0.0.1:6379> TTL nazwisko
+(integer) 122
+127.0.0.1:6379> PERSIST nazwisko
+(integer) 1
+127.0.0.1:6379> TTL nazwisko
+(integer) -1
+
+
+// zad 2
+
+127.0.0.1:6379> STRLEN test
+(integer) 26
+127.0.0.1:6379> APPEND test "RAZ DWA RAZ DWA RAZ DWA RAZ DWA RAZ DWA"
+(integer) 66
+127.0.0.1:6379> GET test
+"Lorem Ipsum Dolor Sit AmetRAZ DWA RAZ DWA RAZ DWA RAZ DWA RAZ DWA\x16"
+127.0.0.1:6379> 
+127.0.0.1:6379> EXPIRE test 10
+(integer) 1
+127.0.0.1:6379> GET test
+(nil)
+127.0.0.1:6379> EXISTS test
+(integer) 0
+127.0.0.1:6379> 
+
+
+// zad 3
+
+127.0.0.1:6379> KEYS *
+1) "n"
+2) "nazwisko"
+3) "list1"
+
+127.0.0.1:6379> LPUSH list1 a b c d e
+(integer) 8
+127.0.0.1:6379> RPUSH list1 f g h i j
+(integer) 13
+127.0.0.1:6379> LLEN list1
+(integer) 13
+127.0.0.1:6379> LTRIM list1 0 4
+OK
+127.0.0.1:6379> LPOP list1
+"e"
+127.0.0.1:6379> RPOP list1
+"a"
+127.0.0.1:6379> LPUSH nowa_lista unu doi trei patru cinci sase sapte
+(integer) 7
+127.0.0.1:6379> RPOPLPUSH nowa_lista list1
+"sapte"
+127.0.0.1:6379> LRANGE list1 0 4
+1) "sapte"
+2) "d"
+3) "c"
+4) "b"
+
+
+// zad 4
+
+127.0.0.1:6379> hmset 100 nazwisko WEGLARZ stanowisko dyrektor placa_pod 1730.0 placa_dod 420.0 data_zatrudnienia 1968-01-01 id_zesp 10
+OK
+127.0.0.1:6379> hmset 110 nazwisko BLAZEWICZ stanowisko profesor placa_pod 1350 placa_dod 210 data_zatrudnienia 1973-01-05 id_zesp 40
+OK
+127.0.0.1:6379> hmset 120 nazwisko SLOWINSKI stanowisko profesor placa_pod 1070 placa_dod NULL data_zatrudnienia 1977-09-01 id_zesp 30
+OK
+
+127.0.0.1:6379> HKEYS 100
+1) "nazwisko"
+2) "stanowisko"
+3) "placa_pod"
+4) "placa_dod"
+5) "data_zatrudnienia"
+6) "id_zesp"
+
+127.0.0.1:6379> HINCRBYFLOAT 110 placa_pod 250.50
+"1600.5"
+
+127.0.0.1:6379> DEL key 120
+(integer) 1
+127.0.0.1:6379> KEYS 1*
+1) "110"
+2) "100"
+
+
+// zad 5
+127.0.0.1:6379> sadd ips "212.77.98.9" "127.0.0.1" "192.168.1.6" "109.173.139.35" "34.218.180.118" "192.168.8.1" "162.216.250.12" "10.0.12.35" "150.254.30.136" "77.65.65.168"
+(integer) 10
+127.0.0.1:6379> scard ips
+(integer) 11
+
+127.0.0.1:6379> sdiff my_blog my_page
+1) "150.254.35.35"
+2) "150.254.50.45"
+127.0.0.1:6379> sdiff my_blog ips
+1) "150.254.35.35"
+2) "150.254.50.45"
+3) "31.142.34.46"
+127.0.0.1:6379> sdiff ips my_blog
+ 1) "192.168.1.6"
+ 2) "109.173.139.35"
+ 3) "10.0.12.35"
+ 4) "212.77.98.9"
+ 5) "150.254.30.136"
+ 6) "192.168.8.1"
+ 7) "127.0.0.1"
+ 8) "162.216.250.12"
+ 9) "77.65.65.168"
+10) "34.218.180.118"
+
+127.0.0.1:6379> SINTER ips my_blog
+1) "150.254.30.30"
+127.0.0.1:6379> SINTER my_blog my_page
+1) "150.254.30.30"
+2) "31.142.34.46"
+
+127.0.0.1:6379> sismember ips 127.0.0.1
+(integer) 1
+127.0.0.1:6379> sismember my_blog 127.0.0.1
+(integer) 0
+
+127.0.0.1:6379> smove ips my_blog "212.77.98.9"
+(integer) 1
+
+127.0.0.1:6379> spop ips 2
+1) "109.173.139.35"
+2) "150.254.30.136"
+
+127.0.0.1:6379> SRANDMEMBER ips 2
+1) "192.168.1.6"
+2) "127.0.0.1"
+127.0.0.1:6379> SRANDMEMBER ips 20
+1) "150.254.30.30"
+2) "162.216.250.12"
+3) "192.168.1.6"
+4) "192.168.8.1"
+5) "77.65.65.168"
+6) "10.0.12.35"
+7) "34.218.180.118"
+8) "127.0.0.1"
+
+127.0.0.1:6379> SUNION my_blog my_page ips
+ 1) "150.254.5.4"
+ 2) "150.254.35.35"
+ 3) "150.254.50.45"
+ 4) "192.168.8.1"
+ 5) "127.0.0.1"
+ 6) "31.142.34.46"
+ 7) "162.216.250.12"
+ 8) "150.254.30.30"
+ 9) "32.44.143.42"
+10) "192.168.1.6"
+11) "77.65.65.168"
+12) "10.0.12.35"
+13) "212.77.98.9"
+14) "31.142.34.45"
+15) "34.218.180.118"
+127.0.0.1:6379> SUNIONSTORE all_ips  my_blog my_page ips
+(integer) 15
+
+
+// zad 6
+
+127.0.0.1:6379> eval 'for i = 1,100000 do redis.pcall("pfadd", "hll", i) end' 0
+(nil)
+
+127.0.0.1:6379> PFCOUNT hll
+(integer) 99564
+
+// zad 7
+
+127.0.0.1:6379> HMSET pracownik4 nazwisko Nowinski placa_pod 800
+OK
+127.0.0.1:6379> SADD ALG30_prac pracownik4
+(integer) 1
+
+127.0.0.1:6379> MULTI
+OK
+127.0.0.1:6379> HINCRBY pracownik4 placa_pod 1500
+QUEUED
+127.0.0.1:6379> DISCARD
+OK
